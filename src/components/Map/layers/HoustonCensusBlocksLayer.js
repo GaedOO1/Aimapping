@@ -44,4 +44,26 @@ export function removeHoustonCensusBlocksLayer(map) {
 export function isHoustonCensusBlocksLayerVisible(map) {
   if (!map.getLayer(CENSUS_BLOCKS_LAYER_ID)) return false;
   return map.getLayoutProperty(CENSUS_BLOCKS_LAYER_ID, 'visibility') === 'visible';
+}
+
+// Show all properties in a popup and zoom in on click
+export function addCensusBlockClickHandler(map) {
+  map.on('click', CENSUS_BLOCKS_LAYER_ID, (e) => {
+    if (!e.features || !e.features.length) return;
+    const feature = e.features[0];
+    const coordinates = feature.geometry.type === 'Polygon'
+      ? feature.geometry.coordinates[0][0]
+      : feature.geometry.coordinates;
+    const center = Array.isArray(coordinates[0])
+      ? coordinates.reduce((acc, coord) => [acc[0] + coord[0], acc[1] + coord[1]], [0, 0]).map(x => x / coordinates.length)
+      : coordinates;
+    const props = feature.properties;
+    const propList = Object.entries(props).map(([k, v]) => `<strong>${k}</strong>: ${v}`).join('<br/>');
+    new mapboxgl.Popup()
+      .setLngLat(center)
+      .setHTML(`<div style='max-height:200px;overflow:auto;'>${propList}</div>`)
+      .addTo(map);
+    // Zoom in on the block
+    map.easeTo({ center, zoom: Math.max(map.getZoom(), 14), duration: 1000 });
+  });
 } 

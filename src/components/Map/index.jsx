@@ -24,6 +24,7 @@ import {
     animateRoadParticles,
     stopRoadParticles
 } from './hooks/mapAnimations';
+import { addCensusBlockClickHandler } from './layers/HoustonCensusBlocksLayer';
 
 // Set mapbox access token
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -51,6 +52,7 @@ const MapComponent = () => {
   const [currentRotation, setCurrentRotation] = useState(0);
   const roadParticleAnimation = useRef(null);
   const [showHoustonCensusBlocks, setShowHoustonCensusBlocks] = useState(false);
+  const [showHarveyLayers, setShowHarveyLayers] = useState(false);
 
   // Add these refs for drag functionality
   const isDraggingRef = useRef(false);
@@ -427,6 +429,12 @@ const MapComponent = () => {
     setCurrentRotation(newRotation);
   };
 
+  useEffect(() => {
+    if (map.current && showHoustonCensusBlocks) {
+      addCensusBlockClickHandler(map.current);
+    }
+  }, [map, showHoustonCensusBlocks]);
+
   return (
     <MapContainer>
       <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
@@ -459,6 +467,8 @@ const MapComponent = () => {
         loadHarveyData={loadHarveyData}
         showHoustonCensusBlocks={showHoustonCensusBlocks}
         setShowHoustonCensusBlocks={setShowHoustonCensusBlocks}
+        showHarveyLayers={showHarveyLayers}
+        setShowHarveyLayers={setShowHarveyLayers}
       />
 
         <ToggleButton 

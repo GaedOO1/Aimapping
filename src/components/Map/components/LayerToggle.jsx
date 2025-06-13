@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { addMUDLayer, removeMUDLayer } from '../layers/MUDLayer';
 import { addHoustonCensusBlocksLayer, removeHoustonCensusBlocksLayer } from '../layers/HoustonCensusBlocksLayer';
+import { addHarveyLayers, removeHarveyLayers, toggleHarveyGradient } from '../layers/HarveyLayer';
 
 const LayerToggleContainer = styled.div`
   position: absolute;
@@ -88,7 +89,9 @@ const LayerToggle = ({
   fetchErcotData,
   loadHarveyData,
   showHoustonCensusBlocks,
-  setShowHoustonCensusBlocks
+  setShowHoustonCensusBlocks,
+  showHarveyLayers,
+  setShowHarveyLayers
 }) => {
   // Add clearErcotMode function
   const clearErcotMode = () => {
